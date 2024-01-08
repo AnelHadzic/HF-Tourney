@@ -11,26 +11,35 @@ const AddTeam = (props: addTeamProps) => {
   const [teamImage, setTeamImage] = useState<string>("");
   const router = useRouter();
 
-  const onSubmitHandler = async (): Promise<void> => {
+  const onSubmitHandler = async (event: React.FormEvent): Promise<void> => {
+    event.preventDefault();
+
     const payload = {
       name: teamName,
       image: teamImage,
       league_id: id,
     };
-    await fetch(`http://localhost:8080/api/team`, {
-      method: "POST",
-      headers: {
-        "Content-type": "application/json",
-      },
-      body: JSON.stringify(payload),
-    })
-      .then((response) => response.json())
-      .then((data) => {
-        router.push(`/leagues/${id}`);
-      })
-      .catch((error) => {
-        console.error(error);
+
+    try {
+      const response = await fetch(`http://localhost:8080/api/team`, {
+        method: "POST",
+        headers: {
+          "Content-type": "application/json",
+        },
+        body: JSON.stringify(payload),
       });
+
+      if (!response.ok) {
+        // Handle non-OK responses here
+        console.error(`Error: ${response.status} - ${response.statusText}`);
+        return;
+      }
+
+      const data = await response.json();
+      router.push(`/leagues/${id}`);
+    } catch (error) {
+      console.error(error);
+    }
   };
 
   return (

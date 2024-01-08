@@ -10,12 +10,12 @@ const TeamTable = (props: teamTableType) => {
   const { id } = props;
   const [teams, setTeams] = useState<Team[]>([]);
 
-  useEffect(() => {
-    const fetchTeams = async () => {
-      const fetchedTeams = await getLeagueTeams(id);
-      setTeams(fetchedTeams);
-    };
+  const fetchTeams = async () => {
+    const fetchedTeams = await getLeagueTeams(id);
+    setTeams(fetchedTeams);
+  };
 
+  useEffect(() => {
     fetchTeams();
   }, [id]);
 
@@ -25,6 +25,9 @@ const TeamTable = (props: teamTableType) => {
         <table className="w-full text-sm text-left text-gray-200 rounded-lg overflow-hidden bg-gray-800">
           <thead className="text-xs text-gray-200 uppercase bg-gray-900">
             <tr>
+              <th scope="col" className="px-6 py-4">
+                #
+              </th>
               <th scope="col" className="px-6 py-4"></th>
               <th scope="col" className="px-6 py-4">
                 Team
@@ -56,9 +59,10 @@ const TeamTable = (props: teamTableType) => {
             </tr>
           </thead>
           <tbody>
-            {teams.map((item) => (
+            {teams.map((item, index) => (
               <Fragment key={item.id}>
                 <tr className="border-b border-gray-700">
+                  <td className="px-6 py-4">{index + 1}</td>
                   <td className="px-6 py-4">
                     <img
                       src={item.image}
