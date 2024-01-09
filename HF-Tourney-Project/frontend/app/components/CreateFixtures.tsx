@@ -6,6 +6,7 @@ import { Team } from "../types/TeamType";
 const CreateFixtures = ({ id }: { id: number }) => {
   const leagueId = id;
   const [teams, setTeams] = useState<Team[]>([]);
+  const [fixtureType, setFixtureType] = useState<string>("Once");
 
   const fetchTeams = async () => {
     const fetchedTeams = await getLeagueTeams(leagueId);
@@ -29,6 +30,17 @@ const CreateFixtures = ({ id }: { id: number }) => {
             awayScore: null,
             hasPlayed: false,
           });
+
+          if (fixtureType === "Twice") {
+            matchups.push({
+              league_id: leagueId,
+              homeTeam: { name: teams[j].name, id: teams[j].id },
+              awayTeam: { name: teams[i].name, id: teams[i].id },
+              homeScore: null,
+              awayScore: null,
+              hasPlayed: false,
+            });
+          }
         }
       }
 
@@ -48,6 +60,24 @@ const CreateFixtures = ({ id }: { id: number }) => {
 
   return (
     <>
+      <label
+        htmlFor="countries"
+        className="block mb-2 text-sm font-medium text-gray-900 dark:text-white"
+      >
+        How many times should the teams meet eachother?
+      </label>
+      <select
+        id="countries"
+        onChange={(e) => {
+          setFixtureType(e.currentTarget.value);
+        }}
+        className="bg-gray-50 mb-6 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+      >
+        <option value="Once">Once</option>
+        <option value="Twice">Twice</option>
+      </select>
+
+      <p>{fixtureType}</p>
       <button
         onClick={() => createFixtures()}
         type="submit"
